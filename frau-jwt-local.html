@@ -1,0 +1,70 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<script src="./dist/local.js"></script>
+
+<dom-module id="frau-jwt-local">
+  <script>
+    /**
+     * `frau-jwt-local`
+     * Handles refreshing tokens
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class FrauJwtLocal extends Polymer.Element {
+      static get is() { return 'frau-jwt-local'; }
+      static get properties() {
+        return {
+          refreshRate: {
+            type: Number,
+            value: 1,
+            observer: '_startInterval'
+          },
+          scope: {
+            type: String,
+            value: '*'
+          },
+          token: {
+            type: String,
+            reflectToAttribute: true,
+            notify: true
+          },
+          _interval: {
+            type: Object
+          }
+        };
+      }
+      
+      _startInterval() {
+        this.stopInterval();
+
+        // Convert this.refreshRate to minutes
+        const refreshRate = this.refreshRate * 1000 * 60
+        this._interval = setInterval(() => {
+          frauJwtlocal(this.scope)
+            .then(t => {
+              this.token = t
+            })
+            .catch(console.error)
+          frauJwtlocal._resetCaches();
+        }, refreshRate);
+      }
+
+      resetTokenCache() {
+        frauJwtlocal._resetCaches();
+      }
+
+      stopInterval() {
+        clearInterval(this._interval);
+      }
+      
+      disconnectedCallback() {
+        super.disconnectedCallback();
+
+        this.stopInterval();
+      }
+    }
+
+    window.customElements.define(FrauJwtLocal.is, FrauJwtLocal);
+  </script>
+</dom-module>

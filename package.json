@@ -1,0 +1,27 @@
+{
+  "name": "polymer-frau-jwt",
+  "version": "1.0.0",
+  "description": "Handles refreshing tokens",
+  "main": "local.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "frau-jwt": "^2.0.1"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "rimraf": "^2.6.2",
+    "uglifyify": "^5.0.1"
+  },
+  "scripts": {
+    "start": "npm build && polymer serve -o",
+    "prebuild": "rimraf dist && mkdir dist",
+    "build": "npm run build:local",
+    "build:local": "browserify -s frau-jwt/local local.js > dist/local.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
