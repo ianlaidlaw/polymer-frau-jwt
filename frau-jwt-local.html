@@ -3,6 +3,9 @@
 
 <dom-module id="frau-jwt-local">
   <script>
+    const SECOND = 1000;
+    const MINUTE = 60 * SECOND;
+
     /**
      * `frau-jwt-local`
      * Handles refreshing tokens
@@ -15,9 +18,8 @@
       static get is() { return 'frau-jwt-local'; }
       static get properties() {
         return {
-          refreshRate: {
+          _refreshRate: {
             type: Number,
-            value: 1,
             observer: '_startInterval'
           },
           scope: {
@@ -27,7 +29,8 @@
           token: {
             type: String,
             reflectToAttribute: true,
-            notify: true
+            notify: true,
+            observer: '_setRefreshRate'
           },
           _interval: {
             type: Object
@@ -38,16 +41,19 @@
       _startInterval() {
         this.stopInterval();
 
-        // Convert this.refreshRate to minutes
-        const refreshRate = this.refreshRate * 1000 * 60
+        if( this._refreshRate < 1 * MINUTE ) {
+          return;
+        }
+
         this._interval = setInterval(() => {
+          frauJwtlocal._resetCaches();
+
           frauJwtlocal(this.scope)
             .then(t => {
               this.token = t
             })
             .catch(console.error)
-          frauJwtlocal._resetCaches();
-        }, refreshRate);
+        }, this._refreshRate);
       }
 
       resetTokenCache() {
@@ -58,6 +64,22 @@
         clearInterval(this._interval);
       }
       
+      _setRefreshRate(token) {
+        try {
+          frauJwtlocal._resetCaches();
+
+          const payload = token.split('.')[1];
+          const b64 = payload
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+          const jwt = JSON.parse(atob(b64));
+          const refreshRate = (new Date(jwt.exp * SECOND) - Date.now()) * 0.90;
+
+          this._refreshRate = Math.floor(refreshRate)
+        } catch (e) {
+          this._refreshRate = 55 * MINUTE;
+        }
+      }
       disconnectedCallback() {
         super.disconnectedCallback();
 
