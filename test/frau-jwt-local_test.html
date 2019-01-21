@@ -1,34 +1,35 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>frau-jwt-local test</title>
+	<title>frau-jwt-local test</title>
 
-    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+	<script src="../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+	<script src="../../wct-browser-legacy/browser.js"></script>
 
-    <link rel="import" href="../frau-jwt-local.html">
+	<script type="module" src="../frau-jwt-local.js"></script>
   </head>
   <body>
 
-    <test-fixture id="BasicTestFixture">
-      <template>
-        <frau-jwt-local></frau-jwt-local>
-      </template>
-    </test-fixture>
+	<test-fixture id="BasicTestFixture">
+	  <template>
+		<frau-jwt-local></frau-jwt-local>
+	  </template>
+	</test-fixture>
 
-    <script>
-      suite('frau-jwt-local', () => {
+	<script type="module">
+import '../frau-jwt-local.js';
+suite('frau-jwt-local', () => {
 
-        test('instantiating the element with default properties works', () => {
-          const element = fixture('BasicTestFixture');
-          assert.equal(element.scope, '*');
-        });
+  test('instantiating the element with default properties works', () => {
+	const element = fixture('BasicTestFixture');
+	assert.equal(element.scope, '*');
+  });
 
-      });
-    </script>
+});
+</script>
 
   </body>
 </html>

@@ -30,7 +30,7 @@ function Emitter(obj) {
 
 function mixin(obj) {
   for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
+	obj[key] = Emitter.prototype[key];
   }
   return obj;
 }
@@ -48,7 +48,7 @@ Emitter.prototype.on =
 Emitter.prototype.addEventListener = function(event, fn){
   this._callbacks = this._callbacks || {};
   (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
-    .push(fn);
+	.push(fn);
   return this;
 };
 
@@ -64,8 +64,8 @@ Emitter.prototype.addEventListener = function(event, fn){
 
 Emitter.prototype.once = function(event, fn){
   function on() {
-    this.off(event, on);
-    fn.apply(this, arguments);
+	this.off(event, on);
+	fn.apply(this, arguments);
   }
 
   on.fn = fn;
@@ -91,8 +91,8 @@ Emitter.prototype.removeEventListener = function(event, fn){
 
   // all
   if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
+	this._callbacks = {};
+	return this;
   }
 
   // specific event
@@ -101,18 +101,18 @@ Emitter.prototype.removeEventListener = function(event, fn){
 
   // remove all handlers
   if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
-    return this;
+	delete this._callbacks['$' + event];
+	return this;
   }
 
   // remove specific handler
   var cb;
   for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
+	cb = callbacks[i];
+	if (cb === fn || cb.fn === fn) {
+	  callbacks.splice(i, 1);
+	  break;
+	}
   }
   return this;
 };
@@ -128,13 +128,13 @@ Emitter.prototype.removeEventListener = function(event, fn){
 Emitter.prototype.emit = function(event){
   this._callbacks = this._callbacks || {};
   var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
+	, callbacks = this._callbacks['$' + event];
 
   if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
+	callbacks = callbacks.slice(0);
+	for (var i = 0, len = callbacks.length; i < len; ++i) {
+	  callbacks[i].apply(this, args);
+	}
   }
 
   return this;
@@ -448,40 +448,40 @@ var scheduleDrain;
 
 {
   if (Mutation) {
-    var called = 0;
-    var observer = new Mutation(nextTick);
-    var element = global.document.createTextNode('');
-    observer.observe(element, {
-      characterData: true
-    });
-    scheduleDrain = function () {
-      element.data = (called = ++called % 2);
-    };
+	var called = 0;
+	var observer = new Mutation(nextTick);
+	var element = global.document.createTextNode('');
+	observer.observe(element, {
+	  characterData: true
+	});
+	scheduleDrain = function () {
+	  element.data = (called = ++called % 2);
+	};
   } else if (!global.setImmediate && typeof global.MessageChannel !== 'undefined') {
-    var channel = new global.MessageChannel();
-    channel.port1.onmessage = nextTick;
-    scheduleDrain = function () {
-      channel.port2.postMessage(0);
-    };
+	var channel = new global.MessageChannel();
+	channel.port1.onmessage = nextTick;
+	scheduleDrain = function () {
+	  channel.port2.postMessage(0);
+	};
   } else if ('document' in global && 'onreadystatechange' in global.document.createElement('script')) {
-    scheduleDrain = function () {
+	scheduleDrain = function () {
 
-      // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-      // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-      var scriptEl = global.document.createElement('script');
-      scriptEl.onreadystatechange = function () {
-        nextTick();
+	  // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+	  // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+	  var scriptEl = global.document.createElement('script');
+	  scriptEl.onreadystatechange = function () {
+		nextTick();
 
-        scriptEl.onreadystatechange = null;
-        scriptEl.parentNode.removeChild(scriptEl);
-        scriptEl = null;
-      };
-      global.document.documentElement.appendChild(scriptEl);
-    };
+		scriptEl.onreadystatechange = null;
+		scriptEl.parentNode.removeChild(scriptEl);
+		scriptEl = null;
+	  };
+	  global.document.documentElement.appendChild(scriptEl);
+	};
   } else {
-    scheduleDrain = function () {
-      setTimeout(nextTick, 0);
-    };
+	scheduleDrain = function () {
+	  setTimeout(nextTick, 0);
+	};
   }
 }
 
@@ -493,13 +493,13 @@ function nextTick() {
   var i, oldQueue;
   var len = queue.length;
   while (len) {
-    oldQueue = queue;
-    queue = [];
-    i = -1;
-    while (++i < len) {
-      oldQueue[i]();
-    }
-    len = queue.length;
+	oldQueue = queue;
+	queue = [];
+	i = -1;
+	while (++i < len) {
+	  oldQueue[i]();
+	}
+	len = queue.length;
   }
   draining = false;
 }
@@ -507,7 +507,7 @@ function nextTick() {
 module.exports = immediate;
 function immediate(task) {
   if (queue.push(task) === 1 && !draining) {
-    scheduleDrain();
+	scheduleDrain();
   }
 }
 
@@ -529,34 +529,34 @@ module.exports = Promise;
 
 function Promise(resolver) {
   if (typeof resolver !== 'function') {
-    throw new TypeError('resolver must be a function');
+	throw new TypeError('resolver must be a function');
   }
   this.state = PENDING;
   this.queue = [];
   this.outcome = void 0;
   if (resolver !== INTERNAL) {
-    safelyResolveThenable(this, resolver);
+	safelyResolveThenable(this, resolver);
   }
 }
 
 Promise.prototype["finally"] = function (callback) {
   if (typeof callback !== 'function') {
-    return this;
+	return this;
   }
   var p = this.constructor;
   return this.then(resolve, reject);
 
   function resolve(value) {
-    function yes () {
-      return value;
-    }
-    return p.resolve(callback()).then(yes);
+	function yes () {
+	  return value;
+	}
+	return p.resolve(callback()).then(yes);
   }
   function reject(reason) {
-    function no () {
-      throw reason;
-    }
-    return p.resolve(callback()).then(no);
+	function no () {
+	  throw reason;
+	}
+	return p.resolve(callback()).then(no);
   }
 };
 Promise.prototype["catch"] = function (onRejected) {
@@ -564,15 +564,15 @@ Promise.prototype["catch"] = function (onRejected) {
 };
 Promise.prototype.then = function (onFulfilled, onRejected) {
   if (typeof onFulfilled !== 'function' && this.state === FULFILLED ||
-    typeof onRejected !== 'function' && this.state === REJECTED) {
-    return this;
+	typeof onRejected !== 'function' && this.state === REJECTED) {
+	return this;
   }
   var promise = new this.constructor(INTERNAL);
   if (this.state !== PENDING) {
-    var resolver = this.state === FULFILLED ? onFulfilled : onRejected;
-    unwrap(promise, resolver, this.outcome);
+	var resolver = this.state === FULFILLED ? onFulfilled : onRejected;
+	unwrap(promise, resolver, this.outcome);
   } else {
-    this.queue.push(new QueueItem(promise, onFulfilled, onRejected));
+	this.queue.push(new QueueItem(promise, onFulfilled, onRejected));
   }
 
   return promise;
@@ -580,12 +580,12 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
 function QueueItem(promise, onFulfilled, onRejected) {
   this.promise = promise;
   if (typeof onFulfilled === 'function') {
-    this.onFulfilled = onFulfilled;
-    this.callFulfilled = this.otherCallFulfilled;
+	this.onFulfilled = onFulfilled;
+	this.callFulfilled = this.otherCallFulfilled;
   }
   if (typeof onRejected === 'function') {
-    this.onRejected = onRejected;
-    this.callRejected = this.otherCallRejected;
+	this.onRejected = onRejected;
+	this.callRejected = this.otherCallRejected;
   }
 }
 QueueItem.prototype.callFulfilled = function (value) {
@@ -603,37 +603,37 @@ QueueItem.prototype.otherCallRejected = function (value) {
 
 function unwrap(promise, func, value) {
   immediate(function () {
-    var returnValue;
-    try {
-      returnValue = func(value);
-    } catch (e) {
-      return handlers.reject(promise, e);
-    }
-    if (returnValue === promise) {
-      handlers.reject(promise, new TypeError('Cannot resolve promise with itself'));
-    } else {
-      handlers.resolve(promise, returnValue);
-    }
+	var returnValue;
+	try {
+	  returnValue = func(value);
+	} catch (e) {
+	  return handlers.reject(promise, e);
+	}
+	if (returnValue === promise) {
+	  handlers.reject(promise, new TypeError('Cannot resolve promise with itself'));
+	} else {
+	  handlers.resolve(promise, returnValue);
+	}
   });
 }
 
 handlers.resolve = function (self, value) {
   var result = tryCatch(getThen, value);
   if (result.status === 'error') {
-    return handlers.reject(self, result.value);
+	return handlers.reject(self, result.value);
   }
   var thenable = result.value;
 
   if (thenable) {
-    safelyResolveThenable(self, thenable);
+	safelyResolveThenable(self, thenable);
   } else {
-    self.state = FULFILLED;
-    self.outcome = value;
-    var i = -1;
-    var len = self.queue.length;
-    while (++i < len) {
-      self.queue[i].callFulfilled(value);
-    }
+	self.state = FULFILLED;
+	self.outcome = value;
+	var i = -1;
+	var len = self.queue.length;
+	while (++i < len) {
+	  self.queue[i].callFulfilled(value);
+	}
   }
   return self;
 };
@@ -643,7 +643,7 @@ handlers.reject = function (self, error) {
   var i = -1;
   var len = self.queue.length;
   while (++i < len) {
-    self.queue[i].callRejected(error);
+	self.queue[i].callRejected(error);
   }
   return self;
 };
@@ -652,9 +652,9 @@ function getThen(obj) {
   // Make sure we only access the accessor once as required by the spec
   var then = obj && obj.then;
   if (obj && (typeof obj === 'object' || typeof obj === 'function') && typeof then === 'function') {
-    return function appyThen() {
-      then.apply(obj, arguments);
-    };
+	return function appyThen() {
+	  then.apply(obj, arguments);
+	};
   }
 }
 
@@ -662,39 +662,39 @@ function safelyResolveThenable(self, thenable) {
   // Either fulfill, reject or reject with error
   var called = false;
   function onError(value) {
-    if (called) {
-      return;
-    }
-    called = true;
-    handlers.reject(self, value);
+	if (called) {
+	  return;
+	}
+	called = true;
+	handlers.reject(self, value);
   }
 
   function onSuccess(value) {
-    if (called) {
-      return;
-    }
-    called = true;
-    handlers.resolve(self, value);
+	if (called) {
+	  return;
+	}
+	called = true;
+	handlers.resolve(self, value);
   }
 
   function tryToUnwrap() {
-    thenable(onSuccess, onError);
+	thenable(onSuccess, onError);
   }
 
   var result = tryCatch(tryToUnwrap);
   if (result.status === 'error') {
-    onError(result.value);
+	onError(result.value);
   }
 }
 
 function tryCatch(func, value) {
   var out = {};
   try {
-    out.value = func(value);
-    out.status = 'success';
+	out.value = func(value);
+	out.status = 'success';
   } catch (e) {
-    out.status = 'error';
-    out.value = e;
+	out.status = 'error';
+	out.value = e;
   }
   return out;
 }
@@ -702,7 +702,7 @@ function tryCatch(func, value) {
 Promise.resolve = resolve;
 function resolve(value) {
   if (value instanceof this) {
-    return value;
+	return value;
   }
   return handlers.resolve(new this(INTERNAL), value);
 }
@@ -717,13 +717,13 @@ Promise.all = all;
 function all(iterable) {
   var self = this;
   if (Object.prototype.toString.call(iterable) !== '[object Array]') {
-    return this.reject(new TypeError('must be an array'));
+	return this.reject(new TypeError('must be an array'));
   }
 
   var len = iterable.length;
   var called = false;
   if (!len) {
-    return this.resolve([]);
+	return this.resolve([]);
   }
 
   var values = new Array(len);
@@ -732,23 +732,23 @@ function all(iterable) {
   var promise = new this(INTERNAL);
 
   while (++i < len) {
-    allResolver(iterable[i], i);
+	allResolver(iterable[i], i);
   }
   return promise;
   function allResolver(value, i) {
-    self.resolve(value).then(resolveFromAll, function (error) {
-      if (!called) {
-        called = true;
-        handlers.reject(promise, error);
-      }
-    });
-    function resolveFromAll(outValue) {
-      values[i] = outValue;
-      if (++resolved === len && !called) {
-        called = true;
-        handlers.resolve(promise, values);
-      }
-    }
+	self.resolve(value).then(resolveFromAll, function (error) {
+	  if (!called) {
+		called = true;
+		handlers.reject(promise, error);
+	  }
+	});
+	function resolveFromAll(outValue) {
+	  values[i] = outValue;
+	  if (++resolved === len && !called) {
+		called = true;
+		handlers.resolve(promise, values);
+	  }
+	}
   }
 }
 
@@ -756,34 +756,34 @@ Promise.race = race;
 function race(iterable) {
   var self = this;
   if (Object.prototype.toString.call(iterable) !== '[object Array]') {
-    return this.reject(new TypeError('must be an array'));
+	return this.reject(new TypeError('must be an array'));
   }
 
   var len = iterable.length;
   var called = false;
   if (!len) {
-    return this.resolve([]);
+	return this.resolve([]);
   }
 
   var i = -1;
   var promise = new this(INTERNAL);
 
   while (++i < len) {
-    resolver(iterable[i]);
+	resolver(iterable[i]);
   }
   return promise;
   function resolver(value) {
-    self.resolve(value).then(function (response) {
-      if (!called) {
-        called = true;
-        handlers.resolve(promise, response);
-      }
-    }, function (error) {
-      if (!called) {
-        called = true;
-        handlers.reject(promise, error);
-      }
-    });
+	self.resolve(value).then(function (response) {
+	  if (!called) {
+		called = true;
+		handlers.resolve(promise, response);
+	  }
+	}, function (error) {
+	  if (!called) {
+		called = true;
+		handlers.reject(promise, error);
+	  }
+	});
   }
 }
 
@@ -796,15 +796,15 @@ function Agent() {
  "timeout", "buffer", "serialize", "parse", "ca", "key", "pfx", "cert"].forEach(function(fn) {
   /** Default setting for all requests from this agent */
   Agent.prototype[fn] = function(/*varargs*/) {
-    this._defaults.push({fn:fn, arguments:arguments});
-    return this;
+	this._defaults.push({fn:fn, arguments:arguments});
+	return this;
   }
 });
 
 Agent.prototype._setDefaults = function(req) {
-    this._defaults.forEach(function(def) {
-      req[def.fn].apply(req, def.arguments);
-    });
+	this._defaults.forEach(function(def) {
+	  req[def.fn].apply(req, def.arguments);
+	});
 };
 
 module.exports = Agent;
@@ -843,12 +843,12 @@ function noop(){};
 var request = exports = module.exports = function(method, url) {
   // callback
   if ('function' == typeof url) {
-    return new exports.Request('GET', method).end(url);
+	return new exports.Request('GET', method).end(url);
   }
 
   // url first
   if (1 == arguments.length) {
-    return new exports.Request('GET', method);
+	return new exports.Request('GET', method);
   }
 
   return new exports.Request(method, url);
@@ -862,14 +862,14 @@ exports.Request = Request;
 
 request.getXHR = function () {
   if (root.XMLHttpRequest
-      && (!root.location || 'file:' != root.location.protocol
-          || !root.ActiveXObject)) {
-    return new XMLHttpRequest;
+	  && (!root.location || 'file:' != root.location.protocol
+		  || !root.ActiveXObject)) {
+	return new XMLHttpRequest;
   } else {
-    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
-    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
-    try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
-    try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
+	try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
+	try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
+	try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
+	try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
   }
   throw Error("Browser-only version of superagent could not find XHR");
 };
@@ -898,7 +898,7 @@ function serialize(obj) {
   if (!isObject(obj)) return obj;
   var pairs = [];
   for (var key in obj) {
-    pushEncodedKeyValuePair(pairs, key, obj[key]);
+	pushEncodedKeyValuePair(pairs, key, obj[key]);
   }
   return pairs.join('&');
 }
@@ -914,20 +914,20 @@ function serialize(obj) {
 
 function pushEncodedKeyValuePair(pairs, key, val) {
   if (val != null) {
-    if (Array.isArray(val)) {
-      val.forEach(function(v) {
-        pushEncodedKeyValuePair(pairs, key, v);
-      });
-    } else if (isObject(val)) {
-      for(var subkey in val) {
-        pushEncodedKeyValuePair(pairs, key + '[' + subkey + ']', val[subkey]);
-      }
-    } else {
-      pairs.push(encodeURIComponent(key)
-        + '=' + encodeURIComponent(val));
-    }
+	if (Array.isArray(val)) {
+	  val.forEach(function(v) {
+		pushEncodedKeyValuePair(pairs, key, v);
+	  });
+	} else if (isObject(val)) {
+	  for(var subkey in val) {
+		pushEncodedKeyValuePair(pairs, key + '[' + subkey + ']', val[subkey]);
+	  }
+	} else {
+	  pairs.push(encodeURIComponent(key)
+		+ '=' + encodeURIComponent(val));
+	}
   } else if (val === null) {
-    pairs.push(encodeURIComponent(key));
+	pairs.push(encodeURIComponent(key));
   }
 }
 
@@ -952,14 +952,14 @@ function parseString(str) {
   var pos;
 
   for (var i = 0, len = pairs.length; i < len; ++i) {
-    pair = pairs[i];
-    pos = pair.indexOf('=');
-    if (pos == -1) {
-      obj[decodeURIComponent(pair)] = '';
-    } else {
-      obj[decodeURIComponent(pair.slice(0, pos))] =
-        decodeURIComponent(pair.slice(pos + 1));
-    }
+	pair = pairs[i];
+	pos = pair.indexOf('=');
+	if (pos == -1) {
+	  obj[decodeURIComponent(pair)] = '';
+	} else {
+	  obj[decodeURIComponent(pair.slice(0, pos))] =
+		decodeURIComponent(pair.slice(pos + 1));
+	}
   }
 
   return obj;
@@ -974,7 +974,7 @@ request.parseString = parseString;
 /**
  * Default MIME type map.
  *
- *     superagent.types.xml = 'application/xml';
+ *	 superagent.types.xml = 'application/xml';
  *
  */
 
@@ -990,9 +990,9 @@ request.types = {
 /**
  * Default serialization map.
  *
- *     superagent.serialize['application/xml'] = function(obj){
- *       return 'generated xml here';
- *     };
+ *	 superagent.serialize['application/xml'] = function(obj){
+ *	   return 'generated xml here';
+ *	 };
  *
  */
 
@@ -1004,9 +1004,9 @@ request.serialize = {
 /**
   * Default parsers.
   *
-  *     superagent.parse['application/xml'] = function(str){
-  *       return { object parsed from str };
-  *     };
+  *	 superagent.parse['application/xml'] = function(str){
+  *	   return { object parsed from str };
+  *	 };
   *
   */
 
@@ -1033,14 +1033,14 @@ function parseHeader(str) {
   var val;
 
   for (var i = 0, len = lines.length; i < len; ++i) {
-    line = lines[i];
-    index = line.indexOf(':');
-    if (index === -1) { // could be empty line, just skip it
-      continue;
-    }
-    field = line.slice(0, index).toLowerCase();
-    val = trim(line.slice(index + 1));
-    fields[field] = val;
+	line = lines[i];
+	index = line.indexOf(':');
+	if (index === -1) { // could be empty line, just skip it
+	  continue;
+	}
+	field = line.slice(0, index).toLowerCase();
+	val = trim(line.slice(index + 1));
+	fields[field] = val;
   }
 
   return fields;
@@ -1070,36 +1070,36 @@ function isJSON(mime) {
  *
  *  Aliasing `superagent` as `request` is nice:
  *
- *      request = superagent;
+ *	  request = superagent;
  *
  *  We can use the promise-like API, or pass callbacks:
  *
- *      request.get('/').end(function(res){});
- *      request.get('/', function(res){});
+ *	  request.get('/').end(function(res){});
+ *	  request.get('/', function(res){});
  *
  *  Sending data can be chained:
  *
- *      request
- *        .post('/user')
- *        .send({ name: 'tj' })
- *        .end(function(res){});
+ *	  request
+ *		.post('/user')
+ *		.send({ name: 'tj' })
+ *		.end(function(res){});
  *
  *  Or passed to `.send()`:
  *
- *      request
- *        .post('/user')
- *        .send({ name: 'tj' }, function(res){});
+ *	  request
+ *		.post('/user')
+ *		.send({ name: 'tj' }, function(res){});
  *
  *  Or passed to `.post()`:
  *
- *      request
- *        .post('/user', { name: 'tj' })
- *        .end(function(res){});
+ *	  request
+ *		.post('/user', { name: 'tj' })
+ *		.end(function(res){});
  *
  * Or further reduced to a single call for simple cases:
  *
- *      request
- *        .post('/user', { name: 'tj' }, function(res){});
+ *	  request
+ *		.post('/user', { name: 'tj' }, function(res){});
  *
  * @param {XMLHTTPRequest} xhr
  * @param {Object} options
@@ -1111,13 +1111,13 @@ function Response(req) {
   this.xhr = this.req.xhr;
   // responseText is accessible only if responseType is '' or 'text' and on older browsers
   this.text = ((this.req.method !='HEAD' && (this.xhr.responseType === '' || this.xhr.responseType === 'text')) || typeof this.xhr.responseType === 'undefined')
-     ? this.xhr.responseText
-     : null;
+	 ? this.xhr.responseText
+	 : null;
   this.statusText = this.req.xhr.statusText;
   var status = this.xhr.status;
   // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
   if (status === 1223) {
-    status = 204;
+	status = 204;
   }
   this._setStatusProperties(status);
   this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders());
@@ -1128,11 +1128,11 @@ function Response(req) {
   this._setHeaderProperties(this.header);
 
   if (null === this.text && req._responseType) {
-    this.body = this.xhr.response;
+	this.body = this.xhr.response;
   } else {
-    this.body = this.req.method != 'HEAD'
-      ? this._parseBody(this.text ? this.text : this.xhr.response)
-      : null;
+	this.body = this.req.method != 'HEAD'
+	  ? this._parseBody(this.text ? this.text : this.xhr.response)
+	  : null;
   }
 }
 
@@ -1152,14 +1152,14 @@ ResponseBase(Response.prototype);
 Response.prototype._parseBody = function(str) {
   var parse = request.parse[this.type];
   if (this.req._parser) {
-    return this.req._parser(this, str);
+	return this.req._parser(this, str);
   }
   if (!parse && isJSON(this.type)) {
-    parse = request.parse['application/json'];
+	parse = request.parse['application/json'];
   }
   return parse && str && (str.length || str instanceof Object)
-    ? parse(str)
-    : null;
+	? parse(str)
+	: null;
 };
 
 /**
@@ -1205,50 +1205,50 @@ function Request(method, url) {
   this.header = {}; // preserves header name case
   this._header = {}; // coerces header names to lowercase
   this.on('end', function(){
-    var err = null;
-    var res = null;
+	var err = null;
+	var res = null;
 
-    try {
-      res = new Response(self);
-    } catch(e) {
-      err = new Error('Parser is unable to parse the response');
-      err.parse = true;
-      err.original = e;
-      // issue #675: return the raw response if the response parsing fails
-      if (self.xhr) {
-        // ie9 doesn't have 'response' property
-        err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response;
-        // issue #876: return the http status code if the response parsing fails
-        err.status = self.xhr.status ? self.xhr.status : null;
-        err.statusCode = err.status; // backwards-compat only
-      } else {
-        err.rawResponse = null;
-        err.status = null;
-      }
+	try {
+	  res = new Response(self);
+	} catch(e) {
+	  err = new Error('Parser is unable to parse the response');
+	  err.parse = true;
+	  err.original = e;
+	  // issue #675: return the raw response if the response parsing fails
+	  if (self.xhr) {
+		// ie9 doesn't have 'response' property
+		err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response;
+		// issue #876: return the http status code if the response parsing fails
+		err.status = self.xhr.status ? self.xhr.status : null;
+		err.statusCode = err.status; // backwards-compat only
+	  } else {
+		err.rawResponse = null;
+		err.status = null;
+	  }
 
-      return self.callback(err);
-    }
+	  return self.callback(err);
+	}
 
-    self.emit('response', res);
+	self.emit('response', res);
 
-    var new_err;
-    try {
-      if (!self._isResponseOK(res)) {
-        new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
-      }
-    } catch(custom_err) {
-      new_err = custom_err; // ok() callback can throw
-    }
+	var new_err;
+	try {
+	  if (!self._isResponseOK(res)) {
+		new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
+	  }
+	} catch(custom_err) {
+	  new_err = custom_err; // ok() callback can throw
+	}
 
-    // #1000 don't catch errors from the callback to avoid double calling it
-    if (new_err) {
-      new_err.original = err;
-      new_err.response = res;
-      new_err.status = res.status;
-      self.callback(new_err, res);
-    } else {
-      self.callback(null, res);
-    }
+	// #1000 don't catch errors from the callback to avoid double calling it
+	if (new_err) {
+	  new_err.original = err;
+	  new_err.response = res;
+	  new_err.status = res.status;
+	  self.callback(new_err, res);
+	} else {
+	  self.callback(null, res);
+	}
   });
 }
 
@@ -1264,17 +1264,17 @@ RequestBase(Request.prototype);
  *
  * Examples:
  *
- *      superagent.types.xml = 'application/xml';
+ *	  superagent.types.xml = 'application/xml';
  *
- *      request.post('/')
- *        .type('xml')
- *        .send(xmlstring)
- *        .end(callback);
+ *	  request.post('/')
+ *		.type('xml')
+ *		.send(xmlstring)
+ *		.end(callback);
  *
- *      request.post('/')
- *        .type('application/xml')
- *        .send(xmlstring)
- *        .end(callback);
+ *	  request.post('/')
+ *		.type('application/xml')
+ *		.send(xmlstring)
+ *		.end(callback);
  *
  * @param {String} type
  * @return {Request} for chaining
@@ -1291,15 +1291,15 @@ Request.prototype.type = function(type){
  *
  * Examples:
  *
- *      superagent.types.json = 'application/json';
+ *	  superagent.types.json = 'application/json';
  *
- *      request.get('/agent')
- *        .accept('json')
- *        .end(callback);
+ *	  request.get('/agent')
+ *		.accept('json')
+ *		.end(callback);
  *
- *      request.get('/agent')
- *        .accept('application/json')
- *        .end(callback);
+ *	  request.get('/agent')
+ *		.accept('application/json')
+ *		.end(callback);
  *
  * @param {String} accept
  * @return {Request} for chaining
@@ -1324,20 +1324,20 @@ Request.prototype.accept = function(type){
 Request.prototype.auth = function(user, pass, options){
   if (1 === arguments.length) pass = '';
   if (typeof pass === 'object' && pass !== null) { // pass is optional and can be replaced with options
-    options = pass;
-    pass = '';
+	options = pass;
+	pass = '';
   }
   if (!options) {
-    options = {
-      type: 'function' === typeof btoa ? 'basic' : 'auto',
-    };
+	options = {
+	  type: 'function' === typeof btoa ? 'basic' : 'auto',
+	};
   }
 
   var encoder = function(string) {
-    if ('function' === typeof btoa) {
-      return btoa(string);
-    }
-    throw new Error('Cannot use basic auth, btoa is not a function');
+	if ('function' === typeof btoa) {
+	  return btoa(string);
+	}
+	throw new Error('Cannot use basic auth, btoa is not a function');
   };
 
   return this._auth(user, pass, options, encoder);
@@ -1349,8 +1349,8 @@ Request.prototype.auth = function(user, pass, options){
  * Examples:
  *
  *   request.get('/shoes')
- *     .query('size=10')
- *     .query({ color: 'blue' })
+ *	 .query('size=10')
+ *	 .query({ color: 'blue' })
  *
  * @param {Object|String} val
  * @return {Request} for chaining
@@ -1382,18 +1382,18 @@ Request.prototype.query = function(val){
 
 Request.prototype.attach = function(field, file, options){
   if (file) {
-    if (this._data) {
-      throw Error("superagent can't mix .send() and .attach()");
-    }
+	if (this._data) {
+	  throw Error("superagent can't mix .send() and .attach()");
+	}
 
-    this._getFormData().append(field, file, options || file.name);
+	this._getFormData().append(field, file, options || file.name);
   }
   return this;
 };
 
 Request.prototype._getFormData = function(){
   if (!this._formData) {
-    this._formData = new root.FormData();
+	this._formData = new root.FormData();
   }
   return this._formData;
 };
@@ -1409,15 +1409,15 @@ Request.prototype._getFormData = function(){
 
 Request.prototype.callback = function(err, res){
   if (this._shouldRetry(err, res)) {
-    return this._retry();
+	return this._retry();
   }
 
   var fn = this._callback;
   this.clearTimeout();
 
   if (err) {
-    if (this._maxRetries) err.retries = this._retries - 1;
-    this.emit('error', err);
+	if (this._maxRetries) err.retries = this._retries - 1;
+	this.emit('error', err);
   }
 
   fn(err, res);
@@ -1475,7 +1475,7 @@ Request.prototype._isHost = function _isHost(obj) {
 
 Request.prototype.end = function(fn){
   if (this._endCalled) {
-    console.warn("Warning: .end() was called twice. This is not supported in superagent");
+	console.warn("Warning: .end() was called twice. This is not supported in superagent");
   }
   this._endCalled = true;
 
@@ -1497,57 +1497,57 @@ Request.prototype._end = function() {
 
   // state change
   xhr.onreadystatechange = function(){
-    var readyState = xhr.readyState;
-    if (readyState >= 2 && self._responseTimeoutTimer) {
-      clearTimeout(self._responseTimeoutTimer);
-    }
-    if (4 != readyState) {
-      return;
-    }
+	var readyState = xhr.readyState;
+	if (readyState >= 2 && self._responseTimeoutTimer) {
+	  clearTimeout(self._responseTimeoutTimer);
+	}
+	if (4 != readyState) {
+	  return;
+	}
 
-    // In IE9, reads to any property (e.g. status) off of an aborted XHR will
-    // result in the error "Could not complete the operation due to error c00c023f"
-    var status;
-    try { status = xhr.status } catch(e) { status = 0; }
+	// In IE9, reads to any property (e.g. status) off of an aborted XHR will
+	// result in the error "Could not complete the operation due to error c00c023f"
+	var status;
+	try { status = xhr.status } catch(e) { status = 0; }
 
-    if (!status) {
-      if (self.timedout || self._aborted) return;
-      return self.crossDomainError();
-    }
-    self.emit('end');
+	if (!status) {
+	  if (self.timedout || self._aborted) return;
+	  return self.crossDomainError();
+	}
+	self.emit('end');
   };
 
   // progress
   var handleProgress = function(direction, e) {
-    if (e.total > 0) {
-      e.percent = e.loaded / e.total * 100;
-    }
-    e.direction = direction;
-    self.emit('progress', e);
+	if (e.total > 0) {
+	  e.percent = e.loaded / e.total * 100;
+	}
+	e.direction = direction;
+	self.emit('progress', e);
   };
   if (this.hasListeners('progress')) {
-    try {
-      xhr.onprogress = handleProgress.bind(null, 'download');
-      if (xhr.upload) {
-        xhr.upload.onprogress = handleProgress.bind(null, 'upload');
-      }
-    } catch(e) {
-      // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
-      // Reported here:
-      // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
-    }
+	try {
+	  xhr.onprogress = handleProgress.bind(null, 'download');
+	  if (xhr.upload) {
+		xhr.upload.onprogress = handleProgress.bind(null, 'upload');
+	  }
+	} catch(e) {
+	  // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
+	  // Reported here:
+	  // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
+	}
   }
 
   // initiate request
   try {
-    if (this.username && this.password) {
-      xhr.open(this.method, this.url, true, this.username, this.password);
-    } else {
-      xhr.open(this.method, this.url, true);
-    }
+	if (this.username && this.password) {
+	  xhr.open(this.method, this.url, true, this.username, this.password);
+	} else {
+	  xhr.open(this.method, this.url, true);
+	}
   } catch (err) {
-    // see #1149
-    return this.callback(err);
+	// see #1149
+	return this.callback(err);
   }
 
   // CORS
@@ -1555,25 +1555,25 @@ Request.prototype._end = function() {
 
   // body
   if (!this._formData && 'GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !this._isHost(data)) {
-    // serialize stuff
-    var contentType = this._header['content-type'];
-    var serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
-    if (!serialize && isJSON(contentType)) {
-      serialize = request.serialize['application/json'];
-    }
-    if (serialize) data = serialize(data);
+	// serialize stuff
+	var contentType = this._header['content-type'];
+	var serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
+	if (!serialize && isJSON(contentType)) {
+	  serialize = request.serialize['application/json'];
+	}
+	if (serialize) data = serialize(data);
   }
 
   // set header fields
   for (var field in this.header) {
-    if (null == this.header[field]) continue;
+	if (null == this.header[field]) continue;
 
-    if (this.header.hasOwnProperty(field))
-      xhr.setRequestHeader(field, this.header[field]);
+	if (this.header.hasOwnProperty(field))
+	  xhr.setRequestHeader(field, this.header[field]);
   }
 
   if (this._responseType) {
-    xhr.responseType = this._responseType;
+	xhr.responseType = this._responseType;
   }
 
   // send stuff
@@ -1591,12 +1591,12 @@ request.agent = function() {
 
 ["GET", "POST", "OPTIONS", "PATCH", "PUT", "DELETE"].forEach(function(method) {
   Agent.prototype[method.toLowerCase()] = function(url, fn) {
-    var req = new request.Request(method, url);
-    this._setDefaults(req);
-    if (fn) {
-      req.end(fn);
-    }
-    return req;
+	var req = new request.Request(method, url);
+	this._setDefaults(req);
+	if (fn) {
+	  req.end(fn);
+	}
+	return req;
   };
 });
 
@@ -1782,7 +1782,7 @@ function RequestBase(obj) {
 
 function mixin(obj) {
   for (var key in RequestBase.prototype) {
-    obj[key] = RequestBase.prototype[key];
+	obj[key] = RequestBase.prototype[key];
   }
   return obj;
 }
@@ -1825,9 +1825,9 @@ RequestBase.prototype.parse = function parse(fn){
  *
  * Examples:
  *
- *      req.get('/')
- *        .responseType('blob')
- *        .end(callback);
+ *	  req.get('/')
+ *		.responseType('blob')
+ *		.end(callback);
  *
  * @param {String} val
  * @return {Request} for chaining
@@ -1868,22 +1868,22 @@ RequestBase.prototype.serialize = function serialize(fn){
 
 RequestBase.prototype.timeout = function timeout(options){
   if (!options || 'object' !== typeof options) {
-    this._timeout = options;
-    this._responseTimeout = 0;
-    return this;
+	this._timeout = options;
+	this._responseTimeout = 0;
+	return this;
   }
 
   for(var option in options) {
-    switch(option) {
-      case 'deadline':
-        this._timeout = options.deadline;
-        break;
-      case 'response':
-        this._responseTimeout = options.response;
-        break;
-      default:
-        console.warn("Unknown timeout option", option);
-    }
+	switch(option) {
+	  case 'deadline':
+		this._timeout = options.deadline;
+		break;
+	  case 'response':
+		this._responseTimeout = options.response;
+		break;
+	  default:
+		console.warn("Unknown timeout option", option);
+	}
   }
   return this;
 };
@@ -1926,24 +1926,24 @@ var ERROR_CODES = [
  */
 RequestBase.prototype._shouldRetry = function(err, res) {
   if (!this._maxRetries || this._retries++ >= this._maxRetries) {
-    return false;
+	return false;
   }
   if (this._retryCallback) {
-    try {
-      var override = this._retryCallback(err, res);
-      if (override === true) return true;
-      if (override === false) return false;
-      // undefined falls back to defaults
-    } catch(e) {
-      console.error(e);
-    }
+	try {
+	  var override = this._retryCallback(err, res);
+	  if (override === true) return true;
+	  if (override === false) return false;
+	  // undefined falls back to defaults
+	} catch(e) {
+	  console.error(e);
+	}
   }
   if (res && res.status && res.status >= 500 && res.status != 501) return true;
   if (err) {
-    if (err.code && ~ERROR_CODES.indexOf(err.code)) return true;
-    // Superagent timeout
-    if (err.timeout && err.code == 'ECONNABORTED') return true;
-    if (err.crossDomain) return true;
+	if (err.code && ~ERROR_CODES.indexOf(err.code)) return true;
+	// Superagent timeout
+	if (err.timeout && err.code == 'ECONNABORTED') return true;
+	if (err.crossDomain) return true;
   }
   return false;
 };
@@ -1961,8 +1961,8 @@ RequestBase.prototype._retry = function() {
 
   // node
   if (this.req) {
-    this.req = null;
-    this.req = this.request();
+	this.req = null;
+	this.req = this.request();
   }
 
   this._aborted = false;
@@ -1981,16 +1981,16 @@ RequestBase.prototype._retry = function() {
 
 RequestBase.prototype.then = function then(resolve, reject) {
   if (!this._fullfilledPromise) {
-    var self = this;
-    if (this._endCalled) {
-      console.warn("Warning: superagent request was sent twice, because both .end() and .then() were called. Never call .end() if you use promises");
-    }
-    this._fullfilledPromise = new Promise(function(innerResolve, innerReject) {
-      self.end(function(err, res) {
-        if (err) innerReject(err);
-        else innerResolve(res);
-      });
-    });
+	var self = this;
+	if (this._endCalled) {
+	  console.warn("Warning: superagent request was sent twice, because both .end() and .then() were called. Never call .end() if you use promises");
+	}
+	this._fullfilledPromise = new Promise(function(innerResolve, innerReject) {
+	  self.end(function(err, res) {
+		if (err) innerReject(err);
+		else innerResolve(res);
+	  });
+	});
   }
   return this._fullfilledPromise.then(resolve, reject);
 };
@@ -2016,11 +2016,11 @@ RequestBase.prototype.ok = function(cb) {
 
 RequestBase.prototype._isResponseOK = function(res) {
   if (!res) {
-    return false;
+	return false;
   }
 
   if (this._okCallback) {
-    return this._okCallback(res);
+	return this._okCallback(res);
   }
 
   return res.status >= 200 && res.status < 300;
@@ -2059,14 +2059,14 @@ RequestBase.prototype.getHeader = RequestBase.prototype.get;
  *
  * Examples:
  *
- *      req.get('/')
- *        .set('Accept', 'application/json')
- *        .set('X-API-Key', 'foobar')
- *        .end(callback);
+ *	  req.get('/')
+ *		.set('Accept', 'application/json')
+ *		.set('X-API-Key', 'foobar')
+ *		.end(callback);
  *
- *      req.get('/')
- *        .set({ Accept: 'application/json', 'X-API-Key': 'foobar' })
- *        .end(callback);
+ *	  req.get('/')
+ *		.set({ Accept: 'application/json', 'X-API-Key': 'foobar' })
+ *		.end(callback);
  *
  * @param {String|Object} field
  * @param {String} val
@@ -2076,10 +2076,10 @@ RequestBase.prototype.getHeader = RequestBase.prototype.get;
 
 RequestBase.prototype.set = function(field, val){
   if (isObject(field)) {
-    for (var key in field) {
-      this.set(key, field[key]);
-    }
-    return this;
+	for (var key in field) {
+	  this.set(key, field[key]);
+	}
+	return this;
   }
   this._header[field.toLowerCase()] = val;
   this.header[field] = val;
@@ -2092,9 +2092,9 @@ RequestBase.prototype.set = function(field, val){
  *
  * Example:
  *
- *      req.get('/')
- *        .unset('User-Agent')
- *        .end(callback);
+ *	  req.get('/')
+ *		.unset('User-Agent')
+ *		.end(callback);
  *
  * @param {String} field
  */
@@ -2126,33 +2126,33 @@ RequestBase.prototype.unset = function(field){
 RequestBase.prototype.field = function(name, val) {
   // name should be either a string or an object.
   if (null === name || undefined === name) {
-    throw new Error('.field(name, val) name can not be empty');
+	throw new Error('.field(name, val) name can not be empty');
   }
 
   if (this._data) {
-    console.error(".field() can't be used if .send() is used. Please use only .send() or only .field() & .attach()");
+	console.error(".field() can't be used if .send() is used. Please use only .send() or only .field() & .attach()");
   }
 
   if (isObject(name)) {
-    for (var key in name) {
-      this.field(key, name[key]);
-    }
-    return this;
+	for (var key in name) {
+	  this.field(key, name[key]);
+	}
+	return this;
   }
 
   if (Array.isArray(val)) {
-    for (var i in val) {
-      this.field(name, val[i]);
-    }
-    return this;
+	for (var i in val) {
+	  this.field(name, val[i]);
+	}
+	return this;
   }
 
   // val should be defined now
   if (null === val || undefined === val) {
-    throw new Error('.field(name, val) val can not be empty');
+	throw new Error('.field(name, val) val can not be empty');
   }
   if ('boolean' === typeof val) {
-    val = '' + val;
+	val = '' + val;
   }
   this._getFormData().append(name, val);
   return this;
@@ -2166,7 +2166,7 @@ RequestBase.prototype.field = function(name, val) {
  */
 RequestBase.prototype.abort = function(){
   if (this._aborted) {
-    return this;
+	return this;
   }
   this._aborted = true;
   this.xhr && this.xhr.abort(); // browser
@@ -2178,18 +2178,18 @@ RequestBase.prototype.abort = function(){
 
 RequestBase.prototype._auth = function(user, pass, options, base64Encoder) {
   switch (options.type) {
-    case 'basic':
-      this.set('Authorization', 'Basic ' + base64Encoder(user + ':' + pass));
-      break;
+	case 'basic':
+	  this.set('Authorization', 'Basic ' + base64Encoder(user + ':' + pass));
+	  break;
 
-    case 'auto':
-      this.username = user;
-      this.password = pass;
-      break;
+	case 'auto':
+	  this.username = user;
+	  this.password = pass;
+	  break;
 
-    case 'bearer': // usage would be .auth(accessToken, { type: 'bearer' })
-      this.set('Authorization', 'Bearer ' + user);
-      break;
+	case 'bearer': // usage would be .auth(accessToken, { type: 'bearer' })
+	  this.set('Authorization', 'Bearer ' + user);
+	  break;
   }
   return this;
 };
@@ -2234,7 +2234,7 @@ RequestBase.prototype.redirects = function(n){
  */
 RequestBase.prototype.maxResponseSize = function(n){
   if ('number' !== typeof n) {
-    throw TypeError("Invalid argument");
+	throw TypeError("Invalid argument");
   }
   this._maxResponseSize = n;
   return this;
@@ -2251,10 +2251,10 @@ RequestBase.prototype.maxResponseSize = function(n){
 
 RequestBase.prototype.toJSON = function() {
   return {
-    method: this.method,
-    url: this.url,
-    data: this._data,
-    headers: this._header,
+	method: this.method,
+	url: this.url,
+	data: this._data,
+	headers: this._header,
   };
 };
 
@@ -2264,34 +2264,34 @@ RequestBase.prototype.toJSON = function() {
  *
  * Examples:
  *
- *       // manual json
- *       request.post('/user')
- *         .type('json')
- *         .send('{"name":"tj"}')
- *         .end(callback)
+ *	   // manual json
+ *	   request.post('/user')
+ *		 .type('json')
+ *		 .send('{"name":"tj"}')
+ *		 .end(callback)
  *
- *       // auto json
- *       request.post('/user')
- *         .send({ name: 'tj' })
- *         .end(callback)
+ *	   // auto json
+ *	   request.post('/user')
+ *		 .send({ name: 'tj' })
+ *		 .end(callback)
  *
- *       // manual x-www-form-urlencoded
- *       request.post('/user')
- *         .type('form')
- *         .send('name=tj')
- *         .end(callback)
+ *	   // manual x-www-form-urlencoded
+ *	   request.post('/user')
+ *		 .type('form')
+ *		 .send('name=tj')
+ *		 .end(callback)
  *
- *       // auto x-www-form-urlencoded
- *       request.post('/user')
- *         .type('form')
- *         .send({ name: 'tj' })
- *         .end(callback)
+ *	   // auto x-www-form-urlencoded
+ *	   request.post('/user')
+ *		 .type('form')
+ *		 .send({ name: 'tj' })
+ *		 .end(callback)
  *
- *       // defaults to x-www-form-urlencoded
- *      request.post('/user')
- *        .send('name=tobi')
- *        .send('species=ferret')
- *        .end(callback)
+ *	   // defaults to x-www-form-urlencoded
+ *	  request.post('/user')
+ *		.send('name=tobi')
+ *		.send('species=ferret')
+ *		.end(callback)
  *
  * @param {String|Object} data
  * @return {Request} for chaining
@@ -2303,41 +2303,41 @@ RequestBase.prototype.send = function(data){
   var type = this._header['content-type'];
 
   if (this._formData) {
-    console.error(".send() can't be used if .attach() or .field() is used. Please use only .send() or only .field() & .attach()");
+	console.error(".send() can't be used if .attach() or .field() is used. Please use only .send() or only .field() & .attach()");
   }
 
   if (isObj && !this._data) {
-    if (Array.isArray(data)) {
-      this._data = [];
-    } else if (!this._isHost(data)) {
-      this._data = {};
-    }
+	if (Array.isArray(data)) {
+	  this._data = [];
+	} else if (!this._isHost(data)) {
+	  this._data = {};
+	}
   } else if (data && this._data && this._isHost(this._data)) {
-    throw Error("Can't merge these send calls");
+	throw Error("Can't merge these send calls");
   }
 
   // merge
   if (isObj && isObject(this._data)) {
-    for (var key in data) {
-      this._data[key] = data[key];
-    }
+	for (var key in data) {
+	  this._data[key] = data[key];
+	}
   } else if ('string' == typeof data) {
-    // default to x-www-form-urlencoded
-    if (!type) this.type('form');
-    type = this._header['content-type'];
-    if ('application/x-www-form-urlencoded' == type) {
-      this._data = this._data
-        ? this._data + '&' + data
-        : data;
-    } else {
-      this._data = (this._data || '') + data;
-    }
+	// default to x-www-form-urlencoded
+	if (!type) this.type('form');
+	type = this._header['content-type'];
+	if ('application/x-www-form-urlencoded' == type) {
+	  this._data = this._data
+		? this._data + '&' + data
+		: data;
+	} else {
+	  this._data = (this._data || '') + data;
+	}
   } else {
-    this._data = data;
+	this._data = data;
   }
 
   if (!isObj || this._isHost(data)) {
-    return this;
+	return this;
   }
 
   // default to json
@@ -2351,21 +2351,21 @@ RequestBase.prototype.send = function(data){
  *
  * Examples:
  *
- *       // default order
- *       request.get('/user')
- *         .query('name=Nick')
- *         .query('search=Manny')
- *         .sortQuery()
- *         .end(callback)
+ *	   // default order
+ *	   request.get('/user')
+ *		 .query('name=Nick')
+ *		 .query('search=Manny')
+ *		 .sortQuery()
+ *		 .end(callback)
  *
- *       // customized sort function
- *       request.get('/user')
- *         .query('name=Nick')
- *         .query('search=Manny')
- *         .sortQuery(function(a, b){
- *           return a.length - b.length;
- *         })
- *         .end(callback)
+ *	   // customized sort function
+ *	   request.get('/user')
+ *		 .query('name=Nick')
+ *		 .query('search=Manny')
+ *		 .sortQuery(function(a, b){
+ *		   return a.length - b.length;
+ *		 })
+ *		 .end(callback)
  *
  *
  * @param {Function} sort
@@ -2387,21 +2387,21 @@ RequestBase.prototype.sortQuery = function(sort) {
 RequestBase.prototype._finalizeQueryString = function(){
   var query = this._query.join('&');
   if (query) {
-    this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + query;
+	this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + query;
   }
   this._query.length = 0; // Makes the call idempotent
 
   if (this._sort) {
-    var index = this.url.indexOf('?');
-    if (index >= 0) {
-      var queryArr = this.url.substring(index + 1).split('&');
-      if ('function' === typeof this._sort) {
-        queryArr.sort(this._sort);
-      } else {
-        queryArr.sort();
-      }
-      this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
-    }
+	var index = this.url.indexOf('?');
+	if (index >= 0) {
+	  var queryArr = this.url.substring(index + 1).split('&');
+	  if ('function' === typeof this._sort) {
+		queryArr.sort(this._sort);
+	  } else {
+		queryArr.sort();
+	  }
+	  this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
+	}
   }
 };
 
@@ -2416,7 +2416,7 @@ RequestBase.prototype._appendQueryString = function() {console.trace("Unsupporte
 
 RequestBase.prototype._timeoutError = function(reason, timeout, errno){
   if (this._aborted) {
-    return;
+	return;
   }
   var err = new Error(reason + timeout + 'ms exceeded');
   err.timeout = timeout;
@@ -2432,15 +2432,15 @@ RequestBase.prototype._setTimeouts = function() {
 
   // deadline
   if (this._timeout && !this._timer) {
-    this._timer = setTimeout(function(){
-      self._timeoutError('Timeout of ', self._timeout, 'ETIME');
-    }, this._timeout);
+	this._timer = setTimeout(function(){
+	  self._timeoutError('Timeout of ', self._timeout, 'ETIME');
+	}, this._timeout);
   }
   // response timeout
   if (this._responseTimeout && !this._responseTimeoutTimer) {
-    this._responseTimeoutTimer = setTimeout(function(){
-      self._timeoutError('Response timeout of ', self._responseTimeout, 'ETIMEDOUT');
-    }, this._responseTimeout);
+	this._responseTimeoutTimer = setTimeout(function(){
+	  self._timeoutError('Response timeout of ', self._responseTimeout, 'ETIMEDOUT');
+	}, this._responseTimeout);
   }
 };
 
@@ -2479,7 +2479,7 @@ function ResponseBase(obj) {
 
 function mixin(obj) {
   for (var key in ResponseBase.prototype) {
-    obj[key] = ResponseBase.prototype[key];
+	obj[key] = ResponseBase.prototype[key];
   }
   return obj;
 }
@@ -2509,27 +2509,27 @@ ResponseBase.prototype.get = function(field) {
  */
 
 ResponseBase.prototype._setHeaderProperties = function(header){
-    // TODO: moar!
-    // TODO: make this a util
+	// TODO: moar!
+	// TODO: make this a util
 
-    // content-type
-    var ct = header['content-type'] || '';
-    this.type = utils.type(ct);
+	// content-type
+	var ct = header['content-type'] || '';
+	this.type = utils.type(ct);
 
-    // params
-    var params = utils.params(ct);
-    for (var key in params) this[key] = params[key];
+	// params
+	var params = utils.params(ct);
+	for (var key in params) this[key] = params[key];
 
-    this.links = {};
+	this.links = {};
 
-    // links
-    try {
-        if (header.link) {
-            this.links = utils.parseLinks(header.link);
-        }
-    } catch (err) {
-        // ignore
-    }
+	// links
+	try {
+		if (header.link) {
+			this.links = utils.parseLinks(header.link);
+		}
+	} catch (err) {
+		// ignore
+	}
 };
 
 /**
@@ -2554,32 +2554,32 @@ ResponseBase.prototype._setHeaderProperties = function(header){
  */
 
 ResponseBase.prototype._setStatusProperties = function(status){
-    var type = status / 100 | 0;
+	var type = status / 100 | 0;
 
-    // status / class
-    this.status = this.statusCode = status;
-    this.statusType = type;
+	// status / class
+	this.status = this.statusCode = status;
+	this.statusType = type;
 
-    // basics
-    this.info = 1 == type;
-    this.ok = 2 == type;
-    this.redirect = 3 == type;
-    this.clientError = 4 == type;
-    this.serverError = 5 == type;
-    this.error = (4 == type || 5 == type)
-        ? this.toError()
-        : false;
+	// basics
+	this.info = 1 == type;
+	this.ok = 2 == type;
+	this.redirect = 3 == type;
+	this.clientError = 4 == type;
+	this.serverError = 5 == type;
+	this.error = (4 == type || 5 == type)
+		? this.toError()
+		: false;
 
-    // sugar
-    this.created = 201 == status;
-    this.accepted = 202 == status;
-    this.noContent = 204 == status;
-    this.badRequest = 400 == status;
-    this.unauthorized = 401 == status;
-    this.notAcceptable = 406 == status;
-    this.forbidden = 403 == status;
-    this.notFound = 404 == status;
-    this.unprocessableEntity = 422 == status;
+	// sugar
+	this.created = 201 == status;
+	this.accepted = 202 == status;
+	this.noContent = 204 == status;
+	this.badRequest = 400 == status;
+	this.unauthorized = 401 == status;
+	this.notAcceptable = 406 == status;
+	this.forbidden = 403 == status;
+	this.notFound = 404 == status;
+	this.unprocessableEntity = 422 == status;
 };
 
 },{"./utils":15}],15:[function(require,module,exports){
@@ -2607,12 +2607,12 @@ exports.type = function(str){
 
 exports.params = function(str){
   return str.split(/ *; */).reduce(function(obj, str){
-    var parts = str.split(/ *= */);
-    var key = parts.shift();
-    var val = parts.shift();
+	var parts = str.split(/ *= */);
+	var key = parts.shift();
+	var val = parts.shift();
 
-    if (key && val) obj[key] = val;
-    return obj;
+	if (key && val) obj[key] = val;
+	return obj;
   }, {});
 };
 
@@ -2626,11 +2626,11 @@ exports.params = function(str){
 
 exports.parseLinks = function(str){
   return str.split(/ *, */).reduce(function(obj, str){
-    var parts = str.split(/ *; */);
-    var url = parts[0].slice(1, -1);
-    var rel = parts[1].split(/ *= */)[1].slice(1, -1);
-    obj[rel] = url;
-    return obj;
+	var parts = str.split(/ *; */);
+	var url = parts[0].slice(1, -1);
+	var rel = parts[1].split(/ *= */)[1].slice(1, -1);
+	obj[rel] = url;
+	return obj;
   }, {});
 };
 
@@ -2649,8 +2649,8 @@ exports.cleanHeader = function(header, changesOrigin){
   delete header['host'];
   // secuirty
   if (changesOrigin) {
-    delete header['authorization'];
-    delete header['cookie'];
+	delete header['authorization'];
+	delete header['cookie'];
   }
   return header;
 };

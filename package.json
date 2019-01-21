@@ -1,18 +1,25 @@
 {
+  "description": "Handles refreshing tokens",
+  "keywords": [],
   "name": "polymer-frau-jwt",
   "version": "1.0.0",
-  "description": "Handles refreshing tokens",
   "main": "local.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "frau-jwt": "^2.0.1"
+    "frau-jwt": "^2.0.1",
+    "@polymer/polymer": "^3.0.0"
   },
   "devDependencies": {
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@webcomponents/webcomponentsjs": "^2.2.4",
+    "babel-eslint": "^10.0.1",
     "browserify": "^16.2.3",
+    "polymer-cli": "^1.9.5",
     "rimraf": "^2.6.2",
-    "uglifyify": "^5.0.1"
+    "uglifyify": "^5.0.1",
+    "wct-browser-legacy": "^1.0.1"
   },
   "scripts": {
     "start": "npm build && polymer serve -o",
@@ -21,7 +28,12 @@
     "build:local": "browserify -s frau-jwt/local local.js > dist/local.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "resolutions": {
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0"
+  }
 }
