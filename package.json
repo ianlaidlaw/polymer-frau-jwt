@@ -22,9 +22,9 @@
     "wct-browser-legacy": "^1.0.1"
   },
   "scripts": {
-    "start": "npm build && polymer serve -o",
-    "prebuild": "rimraf dist && mkdir dist",
+    "start": "npm run build && polymer serve -o",
     "build": "npm run build:local",
+    "prebuild": "rimraf dist && mkdir dist",
     "build:local": "browserify -s frau-jwt/local local.js > dist/local.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
