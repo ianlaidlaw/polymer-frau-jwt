@@ -2,7 +2,7 @@
   "description": "Handles refreshing tokens",
   "keywords": [],
   "name": "polymer-frau-jwt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "local.js",
   "directories": {
     "test": "test"
